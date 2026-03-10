@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { handleSubmitAction } from "./actions"; // Importamos tu Server Action
 
-export default function ContactoPage() {
+function ContactoForm() {
   const searchParams = useSearchParams();
   
   // --- AQUÍ DEFINIMOS LOS ESTADOS QUE TE DABAN ERROR ---
@@ -101,5 +101,13 @@ export default function ContactoPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ContactoPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0A0A0A] pt-32 text-center text-white font-black tracking-widest">CARGANDO...</div>}>
+      <ContactoForm />
+    </Suspense>
   );
 }
