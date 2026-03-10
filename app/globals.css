@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+html, body {
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Opcional: Para el suavizado de tipografías pesadas */
+h1 {
+  -webkit-font-smoothing: antialiased;
+}
+
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  /* Cambiamos de 20s a 60s para que sea más lento */
+  animation: marquee 60s linear infinite;
+}
