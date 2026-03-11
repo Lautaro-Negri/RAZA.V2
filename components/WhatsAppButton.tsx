@@ -15,7 +15,7 @@ export default function WhatsAppButton() {
   // IMPORTANTE: Reemplazá este número con el de tu tienda.
   // El formato es: código de país (sin +) + código de área + número.
   // Ejemplo para Argentina (Buenos Aires): 5491123456789
-  const phoneNumber = "5491123456789";
+  const phoneNumber = "5492284727844";
   const whatsappUrl = `https://wa.me/${phoneNumber}`;
 
   return (

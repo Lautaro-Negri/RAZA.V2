@@ -115,11 +115,19 @@ export default function Navbar() {
 
         {/* DERECHA: UTILIDADES */}
         <div className="flex-1 flex items-center justify-end gap-8">
-          <Link href="/adn" className="hidden md:block text-[10px] font-black tracking-[0.3em] text-gray-400 hover:text-white transition-colors">
+          <Link 
+            href="/adn" 
+            className={`hidden md:block text-[10px] font-black tracking-[0.3em] transition-colors relative group ${pathname === "/adn" ? "text-[#D70000]" : "text-gray-400 hover:text-white"}`}
+          >
             ADN
+            <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#D70000] transition-all duration-300 ${pathname === "/adn" ? "w-full" : "w-0 group-hover:w-full"}`}></span>
           </Link>
-          <Link href="/contacto" className="hidden md:block text-[10px] font-black tracking-[0.3em] text-gray-400 hover:text-white transition-colors">
+          <Link 
+            href="/contacto" 
+            className={`hidden md:block text-[10px] font-black tracking-[0.3em] transition-colors relative group ${pathname === "/contacto" ? "text-[#D70000]" : "text-gray-400 hover:text-white"}`}
+          >
             CONTACTO
+            <span className={`absolute -bottom-1 left-0 h-[2px] bg-[#D70000] transition-all duration-300 ${pathname === "/contacto" ? "w-full" : "w-0 group-hover:w-full"}`}></span>
           </Link>
           
           {/* CARRITO TÉCNICO */}

@@ -79,8 +79,8 @@ export default function Footer() {
                 // SOCIAL
               </span>
               <ul className="flex flex-col gap-3">
-                <li><a href="https://instagram.com" target="_blank" className="text-gray-400 hover:text-white text-xs font-bold tracking-widest transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-px bg-[#D70000] transition-all"></span>INSTAGRAM</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white text-xs font-bold tracking-widest transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-px bg-[#D70000] transition-all"></span>TIKTOK</a></li>
+                <li><a href="https://www.instagram.com/raza_indumentaria.ok/?hl=es" target="_blank" className="text-gray-400 hover:text-white text-xs font-bold tracking-widest transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-px bg-[#D70000] transition-all"></span>INSTAGRAM</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white text-xs font-bold tracking-widest transition-colors flex items-center gap-2 group"><span className="w-0 group-hover:w-2 h-px bg-[#D70000] transition-all"></span>FACEBOOK</a></li>
               </ul>
             </div>
 

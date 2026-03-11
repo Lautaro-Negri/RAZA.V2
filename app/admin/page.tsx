@@ -1,11 +1,10 @@
 // app/admin/page.tsx
 import { supabase } from "@/lib/supabase";
-import StatusSelector from "./StatusSelector";
-import ExportCsvButton from "./ExportCsvButton";
 import StreetwearStock from "./StreetwearStock"; // Módulo de stock de productos urbanos
-import InternalNotes from "./InternalNotes";
 import { logoutAction } from "../login/actions";
 import Link from "next/link";
+import StreetwearOrderActions from "./StreetwearOrderActions";
+import ManifestCard from "./ManifestCard";
 
 // Configuración para asegurar datos frescos en cada carga
 export const dynamic = 'force-dynamic';
@@ -29,6 +28,12 @@ export default async function AdminPage({
   // 1.b. DATA FETCHING: Traemos solicitudes de contacto / alianzas
   const { data: allContacts } = await supabase
     .from('alianzas')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  // 1.c. DATA FETCHING: Traemos pedidos de streetwear
+  const { data: allOrders } = await supabase
+    .from('pedidos')
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -86,8 +91,10 @@ export default async function AdminPage({
   // 3. FILTRADO DE LA LISTA VISUAL
   let displayManifests = allManifests || [];
   if (currentFilter && currentFilter !== 'TODOS') {
-    // FIX: También normalizamos aquí para que los filtros encuentren los pedidos viejos
     displayManifests = displayManifests.filter(m => (m.estado || 'RECIBIDO') === currentFilter);
+  } else if (!currentFilter) {
+    // Por defecto, ocultamos los archivados para mantener la lista limpia
+    displayManifests = displayManifests.filter(m => m.estado !== 'ARCHIVADO');
   }
   
   if (searchQuery) {
@@ -99,12 +106,22 @@ export default async function AdminPage({
     );
   }
 
+  // 3.b. FILTRADO DE PEDIDOS STREETWEAR
+  let filteredOrders = allOrders || [];
+  if (currentFilter && currentFilter !== 'TODOS') {
+    filteredOrders = filteredOrders.filter(o => o.estado === currentFilter);
+  } else if (!currentFilter) {
+    // Por defecto ocultamos los archivados para mantener limpia la bandeja de entrada
+    filteredOrders = filteredOrders.filter(o => o.estado !== 'ARCHIVADO');
+  }
+
   const filters = [
     { label: "VER TODOS", value: "TODOS", color: "border-gray-800 text-gray-400" },
     { label: "RECIBIDOS", value: "RECIBIDO", color: "border-blue-900 text-blue-400" },
     { label: "EN DISEÑO", value: "EN_DISEÑO", color: "border-purple-900 text-purple-400" },
     { label: "PRODUCCIÓN", value: "PRODUCCION", color: "border-yellow-900 text-yellow-400" },
     { label: "DESPACHADOS", value: "DESPACHADO", color: "border-green-900 text-green-400" },
+    { label: "ARCHIVADOS", value: "ARCHIVADO", color: "border-zinc-800 text-zinc-600" },
   ];
 
   return (
@@ -269,64 +286,10 @@ export default async function AdminPage({
             </div>
           ) : (
             displayManifests.map((pedido) => {
-              const estadoVisual = pedido.estado || 'RECIBIDO';
               return (
-              <div key={pedido.id} className="border border-gray-800 bg-[#050505] relative overflow-hidden">
-                <div className={`absolute left-0 top-0 w-1 h-full
-                  ${estadoVisual === 'RECIBIDO' ? 'bg-blue-500' : ''}
-                  ${estadoVisual === 'EN_DISEÑO' ? 'bg-purple-500' : ''}
-                  ${estadoVisual === 'PRODUCCION' ? 'bg-yellow-500' : ''}
-                  ${estadoVisual === 'DESPACHADO' ? 'bg-green-500' : ''}
-                `}></div>
-
-                <div className="p-6">
-                  <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 border-b border-gray-900 pb-4">
-                    <div>
-                      <h2 className="text-2xl font-black italic tracking-tighter uppercase">{pedido.nombre_club}</h2>
-                      <div className="text-[10px] text-gray-500 font-mono mt-1 flex flex-col gap-1">
-                        <span className="text-gray-400">REF_{pedido.id} <span className="text-gray-600 mx-2">//</span> {new Date(pedido.created_at).toLocaleDateString()}</span>
-                        <span>RESP: <span className="text-white">{pedido.nombre_responsable}</span></span>
-                        <span>CONTACTO: {pedido.telefono} <span className="text-gray-600 mx-1">|</span> <span className="text-[#D70000]">{pedido.email}</span></span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-2 w-full md:w-auto">
-                      <ExportCsvButton pedido={pedido} />
-                      <StatusSelector pedidoId={pedido.id} estadoActual={estadoVisual} />
-                    </div>
-                  </div>
-
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left text-[10px] font-mono whitespace-nowrap">
-                      <thead>
-                        <tr className="text-gray-600 border-b border-gray-900 uppercase">
-                          <th className="pb-2 w-12 text-center">N°</th>
-                          <th className="pb-2 uppercase">IDENTIDAD</th>
-                          {pedido.prendas.map((p: string) => (
-                            <th key={p} className="pb-2 text-center text-[#D70000] border-l border-gray-900/50 uppercase">{p}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-900/40">
-                        {pedido.jugadores.map((j: any, idx: number) => (
-                          <tr key={idx} className="hover:bg-white/[0.01]">
-                            <td className="py-2 text-center text-gray-600">{j.number || "--"}</td>
-                            <td className="py-2 font-bold text-gray-300 uppercase">{j.name || "S/N"}</td>
-                            {pedido.prendas.map((p: string) => (
-                              <td key={p} className="py-2 text-center text-gray-500 italic border-l border-gray-900/30 uppercase">
-                                {j.sizes[p] || "-"}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  <InternalNotes pedidoId={pedido.id} currentNotes={pedido.notas_internas} />
-                </div>
-              </div>
-            )})
+                <ManifestCard key={pedido.id} pedido={pedido} />
+              );
+            })
           )}
         </div>
 
@@ -381,6 +344,70 @@ export default async function AdminPage({
             {(!allContacts || allContacts.length === 0) && (
               <div className="col-span-full text-center py-16 border border-dashed border-gray-800 text-gray-600 font-mono text-xs tracking-widest">
                 [ BANDEJA DE ENTRADA VACÍA: SIN NUEVAS SOLICITUDES ]
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* SECCIÓN: PEDIDOS STREETWEAR */}
+        <div className="mb-20 border-t border-gray-900 pt-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
+            <div className="border-l-4 border-white pl-6">
+              <h2 className="text-3xl font-black italic tracking-tighter uppercase text-white">
+                PEDIDOS <span className="text-[#D70000]">STREETWEAR</span>
+              </h2>
+              <p className="text-gray-500 font-bold text-[10px] tracking-[0.3em] mt-2 italic uppercase">
+                // COMPRAS DIRECTAS WEB
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+             {filteredOrders.map((order: any) => (
+                <div key={order.id} className="bg-[#050505] border border-gray-900 p-6 flex flex-col gap-4 relative group hover:border-[#D70000] transition-all">
+                   {/* Header Order */}
+                   <div className="flex justify-between items-center border-b border-gray-900 pb-2">
+                      <span className="text-[9px] font-mono text-gray-500 tracking-widest">
+                        {new Date(order.created_at).toLocaleDateString()}
+                      </span>
+                      <span className={`text-[9px] font-mono font-bold tracking-widest px-2 py-0.5 ${order.estado === 'PENDIENTE' ? 'bg-yellow-900/30 text-yellow-500' : 'bg-green-900/30 text-green-500'}`}>
+                        {order.estado}
+                      </span>
+                   </div>
+
+                   {/* Cliente Info */}
+                   <div>
+                      <h3 className="text-white font-black text-lg uppercase tracking-tight">{order.cliente?.nombre}</h3>
+                      <div className="text-[10px] text-gray-400 font-mono flex flex-col gap-1 mt-1">
+                         <span className="flex items-center gap-2">
+                            WA: {order.cliente?.telefono}
+                            <a href={`https://wa.me/${order.cliente?.telefono}`} target="_blank" rel="noopener noreferrer" className="text-[#D70000] hover:text-white">↗</a>
+                         </span>
+                         <span className="truncate" title={order.cliente?.direccion}>DIR: {order.cliente?.direccion}</span>
+                      </div>
+                   </div>
+
+                   {/* Items List */}
+                   <div className="bg-zinc-900/20 p-3 border-l-2 border-gray-800 text-[10px] font-mono text-gray-300 space-y-1 max-h-32 overflow-y-auto">
+                      {order.items?.map((item: any, idx: number) => (
+                        <div key={idx} className="flex justify-between border-b border-white/5 pb-1 mb-1 last:border-0 last:pb-0 last:mb-0">
+                           <span>{item.quantity}x {item.name}</span>
+                           <span className="text-gray-500">{item.size}</span>
+                        </div>
+                      ))}
+                   </div>
+
+                   {/* Total & Action */}
+                   <div className="mt-auto pt-2 flex justify-between items-center border-t border-gray-900 pt-3">
+                      <span className="text-white font-black text-lg">${order.total?.toLocaleString("es-AR")}</span>
+                      <StreetwearOrderActions order={order} />
+                   </div>
+                </div>
+             ))}
+
+             {filteredOrders.length === 0 && (
+              <div className="col-span-full text-center py-16 border border-dashed border-gray-800 text-gray-600 font-mono text-xs tracking-widest">
+                [ SIN PEDIDOS DE STREETWEAR ]
               </div>
             )}
           </div>

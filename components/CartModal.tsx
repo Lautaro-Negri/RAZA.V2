@@ -2,6 +2,8 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useCart } from "../context/CartContext";
+import { supabase } from "@/lib/supabase";
+import toast from "react-hot-toast";
 
 export default function CartModal() {
   const { cart, isCartOpen, toggleCart, removeFromCart } = useCart();
@@ -27,6 +29,7 @@ export default function CartModal() {
   };
 
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     nombre: "",
     telefono: "",
@@ -38,39 +41,38 @@ export default function CartModal() {
     return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   }, [cart]);
 
-  // Función para enviar el pedido por WhatsApp
-  const enviarPedidoWhatsApp = (e: React.FormEvent) => {
+  // Función para procesar el pedido en Supabase
+  const procesarPedido = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    const phoneNumber = "5491123456789"; // IMPORTANTE: Reemplazar con tu número de ventas
-    const orderId = "RZ-ST-" + Math.floor(1000 + Math.random() * 9000);
+    try {
+      const payload = {
+        created_at: new Date().toISOString(),
+        cliente: customerInfo, // Guarda nombre, telefono, direccion
+        items: cart,           // Guarda el array de productos del carrito
+        total: total,
+        estado: "PENDIENTE"
+      };
 
-    let message = `⚡ *PROTOCOLO DE SOLICITUD - RAZA* ⚡\n\n`;
-    message += `*ORDEN:* #${orderId}\n`;
-    message += `----------------------------\n`;
-    message += `*DATOS DE CONTACTO:*\n`;
-    message += `*CLIENTE:* ${customerInfo.nombre}\n`;
-    message += `*WHATSAPP:* ${customerInfo.telefono}\n`;
-    message += `*ENTREGA:* ${customerInfo.direccion}\n`;
-    message += `----------------------------\n`;
-    message += `*DETALLE DE CARGA:*\n\n`;
+      const { error } = await supabase.from('pedidos').insert([payload]);
 
-    cart.forEach((item) => {
-      message += `• ${item.name}\n`;
-      message += `  TALLE: ${item.size} | CANT: ${item.quantity}\n\n`;
-    });
+      if (error) throw error;
 
-    message += `----------------------------\n`;
-    message += `*TOTAL (Ref.):* $${total.toLocaleString("es-AR")}\n`;
-    message += `----------------------------\n`;
-    message += `Solicito verificación de stock y link de pago para procesar el despacho.`;
+      toast.success("PEDIDO REGISTRADO CORRECTAMENTE");
+      
+      // Limpiar carrito (iteramos para borrar ya que no tenemos un clearCart directo expuesto)
+      cart.forEach(item => removeFromCart(`${item.id}-${item.size}`));
+      
+      setIsContactModalOpen(false);
+      toggleCart();
 
-    const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, "_blank");
-
-    setIsContactModalOpen(false);
-    // Opcional: podrías cerrar el carrito también
-    // toggleCart(); 
+    } catch (error) {
+      console.error("Error al guardar pedido:", error);
+      toast.error("ERROR AL PROCESAR PEDIDO");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isRendered) return null;
@@ -148,16 +150,16 @@ export default function CartModal() {
             <h3 className="text-2xl font-black mb-2 text-white tracking-[0.2em]">DATOS DE</h3>
             <h3 className="text-4xl font-black mb-8 text-[#D70000] tracking-widest italic">DESPACHO</h3>
 
-            <form onSubmit={enviarPedidoWhatsApp} className="space-y-6 font-mono">
+            <form onSubmit={procesarPedido} className="space-y-6 font-mono">
               <input required type="text" placeholder=">> NOMBRE COMPLETO" value={customerInfo.nombre} onChange={(e) => setCustomerInfo({ ...customerInfo, nombre: e.target.value })} className="w-full bg-transparent border-b-2 border-zinc-800 focus:border-white text-white p-3 outline-none font-bold text-sm tracking-widest placeholder:text-zinc-600 transition-colors" />
               <input required type="tel" placeholder=">> WHATSAPP DE CONTACTO" value={customerInfo.telefono} onChange={(e) => setCustomerInfo({ ...customerInfo, telefono: e.target.value })} className="w-full bg-transparent border-b-2 border-zinc-800 focus:border-white text-white p-3 outline-none font-bold text-sm tracking-widest placeholder:text-zinc-600 transition-colors" />
               <input required type="text" placeholder=">> DIRECCIÓN DE ENVÍO" value={customerInfo.direccion} onChange={(e) => setCustomerInfo({ ...customerInfo, direccion: e.target.value })} className="w-full bg-transparent border-b-2 border-zinc-800 focus:border-white text-white p-3 outline-none font-bold text-sm tracking-widest placeholder:text-zinc-600 transition-colors" />
 
-              <button type="submit" className="w-full bg-white text-black font-black py-4 mt-6 hover:bg-[#D70000] hover:text-white transition-colors tracking-[0.2em] text-base">
-                CONFIRMAR Y ENVIAR PEDIDO
+              <button disabled={isSubmitting} type="submit" className="w-full bg-white text-black font-black py-4 mt-6 hover:bg-[#D70000] hover:text-white transition-colors tracking-[0.2em] text-base disabled:opacity-50 disabled:cursor-not-allowed">
+                {isSubmitting ? "PROCESANDO..." : "CONFIRMAR PEDIDO"}
               </button>
               <p className="text-zinc-600 text-[10px] text-center tracking-widest pt-2">
-                // SERÁS REDIRIGIDO A WHATSAPP PARA FINALIZAR
+                // SE GUARDARÁ EN EL SISTEMA INTERNO
               </p>
             </form>
           </div>
