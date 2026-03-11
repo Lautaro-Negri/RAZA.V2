@@ -29,13 +29,18 @@ export default function Home() {
 
   return (
     <main className="min-h-screen w-full flex flex-col font-sans uppercase relative bg-black">
-      {/* CAPA DE TEXTURA INDUSTRIAL */}
+      {/* CAPA DE TEXTURA INDUSTRIAL (GLOBAL) */}
       <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+
+      {/* EFECTOS DE PANTALLA GLOBAL (CRT/Scanlines & Vignette) */}
+      <div className="pointer-events-none fixed inset-0 z-50 opacity-20 mix-blend-overlay bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,6px_100%]"></div>
+      <div className="pointer-events-none fixed inset-0 z-50 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.2)_100%)]"></div>
 
       {/* ========================================= */}
       {/* CONTENEDOR HERO */}
       {/* ========================================= */}
       <div className="h-screen w-full flex flex-col relative overflow-hidden">
+
         {/* MARQUESINA SUPERIOR */}
         <div className="w-full bg-[#0A0A0A] text-[#FFFFFF] py-2 z-40 overflow-hidden border-b border-[#D70000]/20 shrink-0">
           <div className="animate-marquee whitespace-nowrap flex items-center gap-10">
@@ -62,7 +67,29 @@ export default function Home() {
           </div>
 
           {/* SECCIÓN STREETWEAR */}
-          <div className="flex-1 bg-[#0A0A0A] text-white flex flex-col justify-center items-center p-10 relative group transition-all duration-700 ease-in-out md:hover:flex-[1.1] border-b md:border-b-0 md:border-r border-[#D70000]/20">
+          <div className="flex-1 bg-[#0A0A0A] text-white flex flex-col justify-center items-center p-10 relative group transition-all duration-700 ease-in-out md:hover:flex-[1.1] border-b md:border-b-0 md:border-r border-[#D70000]/20 overflow-hidden">
+            
+            {/* VIDEO BACKGROUND */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+              <video
+                src="/images/hoodiemuestra.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-black/50"></div>
+            </div>
+
+            {/* FONDO CYBERPUNK (Grilla & Glow) */}
+            <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+               {/* Grilla Técnica */}
+               <div className="absolute inset-0 bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+            </div>
+            {/* Glow rojo ambiental superior */}
+            <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#D70000]/5 rounded-full blur-[100px] pointer-events-none"></div>
+
             <div className="relative z-10 text-center flex flex-col items-center">
               <span className="text-[#D70000] font-black tracking-[0.4em] mb-4 text-xs">
                 DIVISIÓN / DROPS
@@ -88,7 +115,28 @@ export default function Home() {
           </div>
 
           {/* SECCIÓN DEPORTIVA */}
-          <div className="flex-1 bg-[#D70000] text-black flex flex-col justify-center items-center p-10 relative group transition-all duration-700 ease-in-out md:hover:flex-[1.1]">
+          <div className="flex-1 bg-[#D70000] text-black flex flex-col justify-center items-center p-10 relative group transition-all duration-700 ease-in-out md:hover:flex-[1.1] overflow-hidden">
+            
+            {/* VIDEO BACKGROUND */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+              <video
+                src="/images/running.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-[#D70000]/50"></div>
+            </div>
+
+            {/* TEXTURA TÁCTICA DE FONDO */}
+            <div className="absolute inset-0 z-0 opacity-5 pointer-events-none bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#000_10px,#000_12px)]"></div>
+            {/* Logo Gigante de Fondo */}
+            <div className="absolute -bottom-24 -right-24 z-0 opacity-10 rotate-[-15deg] pointer-events-none transition-transform duration-700 group-hover:rotate-0">
+               <Image src="/LogoRaza.png" width={600} height={600} alt="Background Logo" className="w-[500px] h-auto brightness-0" />
+            </div>
+
             <div className="relative z-10 text-center flex flex-col items-center">
               <span className="text-white font-black tracking-[0.4em] mb-4 text-xs">
                 DIVISIÓN / EQUIPOS
@@ -118,7 +166,21 @@ export default function Home() {
       {/* ========================================= */}
       {/* SECCIÓN: LÍNEAS DESTACADAS */}
       {/* ========================================= */}
-      <section className="w-full mx-auto px-6 md:px-10 py-32 text-white relative z-10">
+      <section className="w-full mx-auto px-6 md:px-10 py-32 text-white relative z-10 overflow-hidden bg-black/20">
+        
+        {/* FONDO CYBERPUNK (Grilla & Glow) */}
+        <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+           <div className="absolute inset-0 bg-[linear-gradient(to_right,#333_1px,transparent_1px),linear-gradient(to_bottom,#333_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+        </div>
+        
+        {/* Glow rojo lateral */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#D70000]/10 rounded-full blur-[120px] pointer-events-none translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#D70000]/5 rounded-full blur-[100px] pointer-events-none -translate-x-1/2 translate-y-1/2"></div>
+
+        {/* LÍNEAS TÁCTICAS VERTICALES */}
+        <div className="absolute left-6 md:left-10 top-0 w-px h-full bg-gradient-to-b from-transparent via-gray-800 to-transparent opacity-50 pointer-events-none"></div>
+        <div className="absolute right-6 md:right-10 top-0 w-px h-full bg-gradient-to-b from-transparent via-gray-800 to-transparent opacity-50 pointer-events-none"></div>
+
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
           <div className="border-l-4 border-[#D70000] pl-6">
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none">
@@ -185,6 +247,10 @@ export default function Home() {
       {/* SECCIÓN: ALIANZAS & REPRESENTACIÓN */}
       {/* ========================================= */}
       <section className="w-full border-t border-b border-[#D70000]/30 bg-[#050505] py-20 relative overflow-hidden z-10">
+        
+        {/* TEXTURA TÁCTICA DE FONDO */}
+        <div className="absolute inset-0 z-0 opacity-5 pointer-events-none bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#333_10px,#333_12px)]"></div>
+        
         {/* Detalle técnico de borde rojo superior */}
         <div className="absolute top-0 left-0 w-full h-1 bg-[#D70000]"></div>
 
@@ -223,7 +289,13 @@ export default function Home() {
       {/* ========================================= */}
       {/* NUEVA SECCIÓN: SOPORTE Y DUDAS (FAQ & POLÍTICAS) */}
       {/* ========================================= */}
-      <section className="w-full bg-[#0A0A0A] py-24 md:py-32 relative z-10 border-t border-gray-900">
+      <section className="w-full bg-[#0A0A0A] py-24 md:py-32 relative z-10 border-t border-gray-900 overflow-hidden">
+        
+        {/* FONDO CYBERPUNK (Grilla Fina) */}
+        <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">
+           <div className="absolute inset-0 bg-[linear-gradient(to_right,#222_1px,transparent_1px),linear-gradient(to_bottom,#222_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+        </div>
+        
         <div className="max-w-7xl mx-auto px-6">
           {/* Encabezado */}
           <div className="mb-16 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6">

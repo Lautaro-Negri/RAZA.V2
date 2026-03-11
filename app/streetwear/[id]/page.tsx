@@ -71,13 +71,26 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
           {/* Imagen de Producto (Z-10 para estar por encima de la grilla) */}
           <div className="w-[70%] h-[80%] relative z-10">
-            <img 
-              src={product.img || "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop"} 
-              alt={product.name} 
-              className={`w-full h-full object-contain drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
-                ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
-              `}
-            />
+            {product.category === "HOODIES" ? (
+              <video 
+                src="/images/hoodiemuestra.mp4"
+                autoPlay 
+                loop 
+                muted 
+                playsInline
+                className={`w-full h-full object-cover drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
+                  ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
+                `}
+              />
+            ) : (
+              <img 
+                src={product.img || "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop"} 
+                alt={product.name} 
+                className={`w-full h-full object-contain drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
+                  ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
+                `}
+              />
+            )}
           </div>
         </div>
 

@@ -186,13 +186,26 @@ export default function StreetwearPage() {
                   <div className="absolute left-1/2 top-0 w-px h-full bg-[#D70000]/20 pointer-events-none"></div>
                   <div className="absolute left-0 top-1/2 w-full h-px bg-[#D70000]/20 pointer-events-none"></div>
 
-                  <img 
-                    src={product.img} 
-                    alt={product.name} 
-                    className={`w-full h-full object-contain relative z-10 transition-all duration-700 
-                      ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
-                    `} 
-                  />
+                  {product.category === "HOODIES" ? (
+                    <video
+                      src="/images/hoodiemuestra.mp4"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className={`w-full h-full object-cover relative z-10 transition-all duration-700 
+                        ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
+                      `}
+                    />
+                  ) : (
+                    <img 
+                      src={product.img} 
+                      alt={product.name} 
+                      className={`w-full h-full object-contain relative z-10 transition-all duration-700 
+                        ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
+                      `} 
+                    />
+                  )}
                   
                   <div className={`absolute top-0 left-0 px-3 py-1.5 font-black text-[8px] tracking-widest z-20 border-b border-r border-zinc-800
                     ${product.sold_out ? 'bg-zinc-900 text-gray-600' : 'bg-[#D70000] text-black'}
