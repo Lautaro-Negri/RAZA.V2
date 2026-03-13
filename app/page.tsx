@@ -120,7 +120,7 @@ export default function Home() {
             {/* VIDEO BACKGROUND */}
             <div className="absolute inset-0 z-0 pointer-events-none">
               <video
-                src="/images/running.mp4"
+                src="/images/running_compressed.mp4"
                 autoPlay
                 loop
                 muted
