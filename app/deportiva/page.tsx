@@ -31,7 +31,7 @@ export default function DeportivaPage() {
     "Buzo de Algodón": "/images/buzoalgodon.webp",
     "Remera de Algodón": "/images/remeraalgodon.webp",
     "Rompeviento": "/images/rompeviento.webp",
-    "Training Buzo": "/images/trainingbuzo.webp",
+    "Training Buzo": "/images/TrainingBuzo.webp",
     "Conjunto": "/images/conjunto.webp",
     "CALZA TÉRMICA": "https://images.unsplash.com/photo-1539103371644-7729ee10774b?q=80&w=500&auto=format&fit=crop",
     "PECHERA": "https://images.unsplash.com/photo-1614632537190-23e4121ec040?q=80&w=500&auto=format&fit=crop",
