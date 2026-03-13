@@ -71,7 +71,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
           {/* Imagen de Producto (Z-10 para estar por encima de la grilla) */}
           <div className="w-[70%] h-[80%] relative z-10">
-            {product.category === "HOODIES" ? (
+            {product.category === "HOODIES" && product.id !== "st-002" ? (
               <video 
                 src="/images/hoodiemuestra.mp4"
                 autoPlay 

@@ -8,7 +8,7 @@ export default function LineTechSpecs({ line }: TechSpecsProps) {
   const specs = {
     POTRERO: {
       titulo: "UNIDAD DE ENTRENAMIENTO / AMATEUR",
-      desc: "Liviana, fresca y versátil. Diseñada para la resistencia en el barro.",
+      desc: "Liviana, fresca y versátil.",
       items: ["TEXTURA CLÁSICA TRANSPIRABLE", "CONSTRUCCIÓN ECONÓMICA", "APTO ENTRENAMIENTO INTENSIVO", "SECADO RÁPIDO"]
     },
     CENIT: {
@@ -23,13 +23,13 @@ export default function LineTechSpecs({ line }: TechSpecsProps) {
     },
     INSTITUCIONAL: {
       titulo: "LINEA STAFF / IDENTIDAD CORPORATIVA",
-      desc: "Prendas diseñadas para la presencia del club. Confort térmico y durabilidad.",
+      desc: "La imagen de tu club fuera de la cancha.",
       items: ["PIQUÉ PREMIUM DENSIDAD", "ALGODÓN PEINADO SOFT-TOUCH", "CALCE RELAJADO", "RESISTENCIA AL LAVADO"]
     },
     REPRESENTATIVO: {
       titulo: "EQUIPAMIENTO DE VIAJE / PRE-MATCH",
-      desc: "Protección climática y movilidad extrema para traslados y calentamiento.",
-      items: ["TEJIDOS ROMPEVIENTO", "REPELENTE AL AGUA", "CORTE ERGONÓMICO", "RETENCIÓN DE CALOR"]
+      desc: "Indumentaria para staff y cuerpo técnico.Diseño sobrio y profesional.",
+      items: ["TELAS RESISTENTES", "REPELENTE AL AGUA", "CORTE ERGONÓMICO", "RETENCIÓN DE CALOR"]
     },
     ACCESORIOS: {
       titulo: "GEAR TÉCNICO / CAPA BASE",

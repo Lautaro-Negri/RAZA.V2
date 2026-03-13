@@ -24,24 +24,22 @@ export default function DeportivaPage() {
   ];
 
   const garmentData: Record<string, string> = {
-    "CAMISETA": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=800&auto=format&fit=crop",
-    "SHORT": "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=500&auto=format&fit=crop",
-    "MEDIAS": "https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?q=80&w=500&auto=format&fit=crop",
-    "CHOMBA": "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=800&auto=format&fit=crop",
-    "BERMUDA": "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=500&auto=format&fit=crop",
-    "JOGGING": "https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=500&auto=format&fit=crop",
-    "CAMPERA": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=500&auto=format&fit=crop",
-    "ROMPEVIENTO": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=500&auto=format&fit=crop",
-    "PANTALÓN MICROFIBRA": "https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=500&auto=format&fit=crop",
-    "REMERÓN": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=500&auto=format&fit=crop",
-    "CAMISETA TÉRMICA": "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=500&auto=format&fit=crop",
+    "CAMISETA": "/images/remeraPotrero.webp",
+    "SHORT": "/images/shortPotrero.webp",
+    "MEDIAS": "/images/mediasPotrero.webp",
+    "Chomba": "/images/remeraalgodon.webp",
+    "Buzo de Algodón": "/images/buzoalgodon.webp",
+    "Remera de Algodón": "/images/remeraalgodon.webp",
+    "Rompeviento": "/images/rompeviento.webp",
+    "Training Buzo": "/images/trainingbuzo.webp",
+    "Conjunto": "/images/conjunto.webp",
     "CALZA TÉRMICA": "https://images.unsplash.com/photo-1539103371644-7729ee10774b?q=80&w=500&auto=format&fit=crop",
     "PECHERA": "https://images.unsplash.com/photo-1614632537190-23e4121ec040?q=80&w=500&auto=format&fit=crop",
   };
 
   const getAvailableGarments = (lineId: string) => {
-    if (lineId === "INSTITUCIONAL") return ["CHOMBA", "BERMUDA", "JOGGING", "CAMPERA"];
-    if (lineId === "REPRESENTATIVO") return ["ROMPEVIENTO", "PANTALÓN MICROFIBRA", "REMERÓN"];
+    if (lineId === "INSTITUCIONAL") return ["Chomba", "Buzo de Algodón", "Remera de Algodón"];
+    if (lineId === "REPRESENTATIVO") return ["Rompeviento", "Training Buzo", "Conjunto"];
     if (lineId === "ACCESORIOS") return ["CAMISETA TÉRMICA", "CALZA TÉRMICA", "PECHERA"];
     return ["CAMISETA", "SHORT", "MEDIAS"];
   };

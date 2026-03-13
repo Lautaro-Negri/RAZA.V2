@@ -46,8 +46,8 @@ export default function Home() {
           <div className="animate-marquee whitespace-nowrap flex items-center gap-10">
             {[...Array(10)].map((_, i) => (
               <span key={i} className="text-xs font-black tracking-[0.2em]">
-                RAZA TECHNICAL GEAR • ACCESO TEMPORAL • NO REPOSICIÓN • CALIDAD
-                INDUSTRIAL • RAZA TECHNICAL GEAR •
+                RAZA TECHNICAL CLOTHING • ENVÍOS A TODO EL PAÍS • DISEÑO PERSONALIZADO • CALIDAD
+                INDUSTRIAL • RAZA TECHNICAL CLOTHING •
               </span>
             ))}
           </div>

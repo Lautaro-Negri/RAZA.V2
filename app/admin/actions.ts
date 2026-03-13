@@ -1,6 +1,25 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
+async function createAuthClient() {
+  const cookieStore = await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+          } catch {}
+        },
+      },
+    }
+  );
+}
 
 export async function updateNotesAction(pedidoId: number, newNote: string, currentNotes: string | null) {
   if (!newNote.trim()) {
@@ -17,7 +36,8 @@ export async function updateNotesAction(pedidoId: number, newNote: string, curre
     : formattedNote;
 
   // Actualizamos el registro en Supabase
-  const { error } = await supabase
+  const supabaseAuth = await createAuthClient();
+  const { error } = await supabaseAuth
     .from('manifiestos')
     .update({ notas_internas: updatedNotes })
     .eq('id', pedidoId);
@@ -30,7 +50,8 @@ export async function updateNotesAction(pedidoId: number, newNote: string, curre
 }
 
 export async function clearNotesAction(pedidoId: number) {
-  const { error } = await supabase
+  const supabaseAuth = await createAuthClient();
+  const { error } = await supabaseAuth
     .from('manifiestos')
     .update({ notas_internas: null })
     .eq('id', pedidoId);
@@ -56,7 +77,8 @@ export async function deleteNoteAction(pedidoId: number, indexToRemove: number, 
   // Si no quedan notas, guardamos null, si no, unimos de nuevo con saltos de línea
   const updatedNotes = notes.length > 0 ? notes.join('\n') : null;
 
-  const { error } = await supabase
+  const supabaseAuth = await createAuthClient();
+  const { error } = await supabaseAuth
     .from('manifiestos')
     .update({ notas_internas: updatedNotes })
     .eq('id', pedidoId);

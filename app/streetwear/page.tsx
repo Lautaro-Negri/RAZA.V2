@@ -186,7 +186,7 @@ export default function StreetwearPage() {
                   <div className="absolute left-1/2 top-0 w-px h-full bg-[#D70000]/20 pointer-events-none"></div>
                   <div className="absolute left-0 top-1/2 w-full h-px bg-[#D70000]/20 pointer-events-none"></div>
 
-                  {product.category === "HOODIES" ? (
+                  {product.category === "HOODIES" && product.name !== "HEAVY HOODIE / BLK" ? (
                     <video
                       src="/images/hoodiemuestra.mp4"
                       autoPlay
@@ -199,7 +199,7 @@ export default function StreetwearPage() {
                     />
                   ) : (
                     <img 
-                      src={product.img} 
+                      src={product.name === "HEAVY HOODIE / BLK" ? "/images/hoodieR.webp" : product.img} 
                       alt={product.name} 
                       className={`w-full h-full object-contain relative z-10 transition-all duration-700 
                         ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}

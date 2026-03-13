@@ -26,7 +26,7 @@ export const products = [
     category: "HOODIES",
     tag: "LIMITED",
     serial: "RAZA-ST-002",
-    img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop",
+    img: "/images/hoodieR.webp",
     specs: [
       "Algodón pesado 400g / Rustico Premium",
       "Corte Boxy Fit con hombros caídos",

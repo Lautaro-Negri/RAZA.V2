@@ -3,6 +3,26 @@
 
 import { supabase } from "@/lib/supabase"; // Usamos tu misma librería
 import { revalidatePath } from "next/cache";
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
+async function createAuthClient() {
+  const cookieStore = await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll() },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+          } catch {}
+        },
+      },
+    }
+  );
+}
 
 export async function handleManifestAction(payload: any) {
   // Desestructuramos para que coincida con tus columnas de la DB
@@ -30,7 +50,8 @@ export async function handleManifestAction(payload: any) {
   return { success: true };
 }
 export async function updateOrderStatus(id: number, nuevoEstado: string) {
-  const { data, error } = await supabase
+  const supabaseAuth = await createAuthClient();
+  const { data, error } = await supabaseAuth
     .from('manifiestos')
     .update({ estado: nuevoEstado })
     .eq('id', id);
@@ -45,7 +66,8 @@ export async function updateOrderStatus(id: number, nuevoEstado: string) {
 }
 
 export async function updateCatalogoItem(id: string, updates: any) {
-  const { data, error } = await supabase
+  const supabaseAuth = await createAuthClient();
+  const { data, error } = await supabaseAuth
     .from('lineas_catalogo')
     .update(updates)
     .eq('id', id);
@@ -58,9 +80,12 @@ export async function updateCatalogoItem(id: string, updates: any) {
   return { success: true };
 }
 
-export async function updateStreetwearStock(id: string, newStock: number) {
-  const isSoldOut = newStock <= 0;
-  const { error } = await supabase
+export async function updateStreetwearStock(id: string, isSoldOut: boolean) {
+  const supabaseAuth = await createAuthClient();
+  // Si se marca como agotado, ponemos 0. Si se marca disponible, ponemos 100 (o cualquier positivo).
+  const newStock = isSoldOut ? 0 : 100;
+
+  const { error } = await supabaseAuth
     .from('streetwear_products')
     .update({ 
       stock: newStock, 
@@ -73,5 +98,6 @@ export async function updateStreetwearStock(id: string, newStock: number) {
     return { success: false, error: error.message };
   }
 
+  revalidatePath('/admin');
   return { success: true };
 }
