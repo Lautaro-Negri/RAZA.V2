@@ -1,3 +1,5 @@
+// d:\raza\components\Navbar.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -10,32 +12,32 @@ export default function Navbar() {
   const pathname = usePathname();
   const { cart, toggleCart } = useCart();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Estado para el menú móvil
   const prevCartRef = useRef(cart);
 
   // Efecto para la animación del carrito y notificación
   useEffect(() => {
-    // Solo animar y notificar si se AÑADE un item.
     if (cart.length > prevCartRef.current.length) {
       setIsAnimating(true);
-      const timer = setTimeout(() => setIsAnimating(false), 600); // Duración de la animación
-
-      // Obtener el último producto añadido para la notificación
+      const timer = setTimeout(() => setIsAnimating(false), 600);
       const lastItem = cart[cart.length - 1];
       if (lastItem) {
         toast.success(`"${lastItem.name}" AÑADIDO AL CARRO`);
       }
-
       return () => clearTimeout(timer);
     }
     prevCartRef.current = cart;
   }, [cart]);
 
-  // Clase unificada para los items del dropdown
+  // Cerrar menú móvil al cambiar de ruta
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   const dropdownItemClass = "block p-4 text-[10px] font-mono font-bold tracking-widest text-gray-400 hover:bg-[#D70000] hover:text-black transition-all border-b border-zinc-800 last:border-0 uppercase";
 
   return (
     <>
-      {/* Estilos para las animaciones del carrito. Se inyectan globalmente desde aquí. */}
       <style jsx global>{`
         @keyframes shake {
           10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -54,6 +56,7 @@ export default function Navbar() {
         }
       `}</style>
       <nav className="w-full bg-[#050505] border-b border-zinc-900 z-50 sticky top-0 font-sans uppercase backdrop-blur-md bg-opacity-90">
+      
       {/* TOP BAR TÉCNICA (Solo Desktop) */}
       <div className="w-full bg-black border-b border-zinc-900 py-1 px-6 flex justify-between items-center hidden md:flex">
          <div className="flex gap-4 text-[8px] font-mono text-zinc-600 tracking-widest">
@@ -68,8 +71,21 @@ export default function Navbar() {
 
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between relative">
         
-        {/* IZQUIERDA: NAVEGACIÓN PRINCIPAL */}
-        <div className="flex-1 flex items-center gap-8">
+        {/* BOTÓN HAMBURGUESA (Solo Móvil) */}
+        <div className="flex-1 md:hidden flex items-center">
+            <button 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-white p-2 -ml-2 hover:text-[#D70000] transition-colors"
+              aria-label="Abrir menú"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+        </div>
+
+        {/* IZQUIERDA: NAVEGACIÓN PRINCIPAL (Solo Desktop) */}
+        <div className="flex-1 hidden md:flex items-center gap-8">
           
           {/* DROPDOWN TIENDA */}
           <div className="relative group h-full flex items-center">
@@ -102,7 +118,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* CENTRO: LOGO RAZA (TEXTO TÉCNICO O IMAGEN) */}
+        {/* CENTRO: LOGO RAZA */}
         <div className="flex-none absolute left-1/2 -translate-x-1/2">
           <Link href="/" className="group flex flex-col items-center">
             <img 
@@ -162,6 +178,17 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+
+      {/* MENÚ MÓVIL DESPLEGABLE (Nuevo) */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden absolute top-full left-0 w-full bg-black border-b border-zinc-800 animate-in slide-in-from-top-5 z-40 border-t border-zinc-900/50">
+            <Link href="/deportiva" className={dropdownItemClass}>TIENDA DEPORTIVA</Link>
+            <Link href="/streetwear" className={dropdownItemClass}>STREETWEAR</Link>
+            <Link href="/adn" className={dropdownItemClass}>ADN</Link>
+            <Link href="/contacto" className={dropdownItemClass}>CONTACTO</Link>
+        </div>
+      )}
+
       {/* DECORACIÓN DE ESQUINAS */}
       <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[#D70000]/50"></div>
       <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#D70000]/50"></div>
