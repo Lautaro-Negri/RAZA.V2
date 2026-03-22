@@ -1,14 +1,80 @@
 "use client";
 
-import { useState, useRef } from "react"; 
+import { useState, memo } from "react";
+import Image from "next/image";
 import TeamRoster from "../../components/TeamRoster";
 import LineTechSpecs from "../../components/LineTechSpecs";
+
+type LineCardData = { id: string; label: string; img: string };
+
+const LineCard = memo(function LineCard({
+  data,
+  active,
+  onClick,
+}: {
+  data: LineCardData;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className={`group cursor-pointer border transition-all duration-500 relative overflow-hidden flex flex-col h-full min-h-[250px]
+        ${active ? "border-[#D70000]" : "border-gray-900 hover:border-gray-600"}`}
+    >
+      <Image
+        src={data.img}
+        alt={data.id}
+        fill
+        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 200px"
+        className={`object-cover transition-all duration-700 z-0
+          ${active ? "opacity-100 scale-105" : "opacity-30 grayscale group-hover:opacity-50 group-hover:scale-105"}
+        `}
+      />
+
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 transition-opacity duration-500
+        ${active ? "opacity-80" : "opacity-90"}
+      `}
+      />
+
+      <div
+        className={`relative z-20 mt-auto p-4 flex flex-col justify-end transition-all w-full
+        ${active ? "bg-gradient-to-t from-[#D70000] via-[#D70000]/80 to-transparent pt-16" : "pt-8"}
+      `}
+      >
+        <div className="flex justify-between items-end">
+          <div>
+            <span
+              className={`text-[8px] md:text-[9px] font-bold tracking-[0.3em] block uppercase
+              ${active ? "text-black opacity-80" : "text-gray-400"}
+            `}
+            >
+              {data.label}
+            </span>
+            <h2
+              className={`text-lg md:text-xl font-black tracking-widest leading-none mt-1
+              ${active ? "text-black" : "text-white"}
+            `}
+            >
+              {data.id}
+            </h2>
+          </div>
+          {active && (
+            <span className="font-mono text-[9px] font-black tracking-tighter text-black">
+              [ ACTIVE ]
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
 
 export default function DeportivaPage() {
   const [selectedLine, setSelectedLine] = useState<string | null>(null);
   const [selectedKit, setSelectedKit] = useState<string[]>([]);
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [currentGarmentIndex, setCurrentGarmentIndex] = useState(0);
 
   const performanceLines = [
@@ -78,8 +144,13 @@ export default function DeportivaPage() {
           
           {/* TARJETAS DE LÍNEA */}
           <div className="flex-1 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 h-full min-h-[700px]">
-            {[...performanceLines, ...staffLines].map(l => (
-              <Card key={l.id} data={l} active={selectedLine === l.id} onClick={() => selectLine(l.id)} />
+            {[...performanceLines, ...staffLines].map((l) => (
+              <LineCard
+                key={l.id}
+                data={l}
+                active={selectedLine === l.id}
+                onClick={() => selectLine(l.id)}
+              />
             ))}
           </div>
 
@@ -128,10 +199,12 @@ export default function DeportivaPage() {
                           ${isAdded ? 'border-[#D70000]' : 'border-gray-900'}
                         `}
                       >
-                        <img 
-                          src={imgSrc} 
-                          alt={currentGarment} 
-                          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" 
+                        <Image
+                          src={imgSrc}
+                          alt={currentGarment}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 450px"
+                          className="object-cover transition-all duration-700 group-hover:scale-105"
                         />
                         
                         <div 
@@ -238,60 +311,23 @@ export default function DeportivaPage() {
 
       {enlargedImage && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 md:p-10 backdrop-blur-md cursor-zoom-out" onClick={() => setEnlargedImage(null)}>
-          <div className="relative w-full max-w-4xl max-h-screen flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+          <div className="relative w-full max-w-4xl max-h-screen flex flex-col items-center justify-center" onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setEnlargedImage(null)} className="absolute -top-12 right-0 text-gray-400 hover:text-[#D70000] font-mono tracking-[0.3em] text-[10px] font-black transition-colors flex items-center gap-2">
               [X] CERRAR VISOR
             </button>
-            <img src={enlargedImage} alt="Prenda" className="w-auto max-h-[85vh] object-contain border border-gray-800 shadow-2xl" />
+            <div className="relative w-full h-[min(85vh,900px)]">
+              <Image
+                src={enlargedImage}
+                alt="Prenda"
+                fill
+                className="object-contain border border-gray-800 shadow-2xl"
+                sizes="(max-width: 896px) 100vw, 896px"
+                priority
+              />
+            </div>
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function Card({ data, active, onClick }: any) {
-  return (
-    <div 
-      onClick={onClick} 
-      className={`group cursor-pointer border transition-all duration-500 relative overflow-hidden flex flex-col h-full min-h-[250px]
-        ${active ? "border-[#D70000]" : "border-gray-900 hover:border-gray-600"}`}
-    >
-      <img 
-        src={data.img} 
-        alt={data.id} 
-        className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 z-0
-          ${active ? "opacity-100 scale-105" : "opacity-30 grayscale group-hover:opacity-50 group-hover:scale-105"}
-        `} 
-      />
-      
-      <div className={`absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-10 transition-opacity duration-500
-        ${active ? 'opacity-80' : 'opacity-90'}
-      `}></div>
-      
-      <div className={`relative z-20 mt-auto p-4 flex flex-col justify-end transition-all w-full
-        ${active ? "bg-gradient-to-t from-[#D70000] via-[#D70000]/80 to-transparent pt-16" : "pt-8"}
-      `}>
-        <div className="flex justify-between items-end">
-          <div>
-            <span className={`text-[8px] md:text-[9px] font-bold tracking-[0.3em] block uppercase
-              ${active ? "text-black opacity-80" : "text-gray-400"}
-            `}>
-              {data.label}
-            </span>
-            <h2 className={`text-lg md:text-xl font-black tracking-widest leading-none mt-1
-              ${active ? "text-black" : "text-white"}
-            `}>
-              {data.id}
-            </h2>
-          </div>
-          {active && (
-            <span className="font-mono text-[9px] font-black tracking-tighter text-black">
-              [ ACTIVE ]
-            </span>
-          )}
-        </div>
-      </div>
     </div>
   );
 }

@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase"; 
+import Image from "next/image";
+import { supabase } from "@/lib/supabase";
+import LazyAutoplayVideo from "@/components/LazyAutoplayVideo"; 
 
 // =========================================
 // COMPONENTE: RELOJ COMPACTO (Rediseñado para el nuevo Header Central)
@@ -173,7 +175,14 @@ export default function StreetwearPage() {
         {/* --- GRILLA DE PRODUCTOS (Mantenemos el diseño que te gustó) --- */}
         <div className="relative z-10 bg-[#020202]/80 backdrop-blur-sm p-8 md:p-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredProducts.map((product) => (
+            {filteredProducts.map((product) => {
+              const stillSrc =
+                product.name === "HEAVY HOODIE / BLK"
+                  ? "/images/hoodieR.webp"
+                  : product.img;
+              const stillRemote =
+                typeof stillSrc === "string" && /^https?:\/\//i.test(stillSrc);
+              return (
               <Link 
                 key={product.id} 
                 href={product.sold_out ? "#" : `/streetwear/${product.id}`}
@@ -187,23 +196,23 @@ export default function StreetwearPage() {
                   <div className="absolute left-0 top-1/2 w-full h-px bg-[#D70000]/20 pointer-events-none"></div>
 
                   {product.category === "HOODIES" && product.name !== "HEAVY HOODIE / BLK" ? (
-                    <video
+                    <LazyAutoplayVideo
                       src="/images/hoodiemuestra.mp4"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
+                      poster="/LogoRaza.png"
                       className={`w-full h-full object-cover relative z-10 transition-all duration-700 
                         ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
                       `}
                     />
                   ) : (
-                    <img 
-                      src={product.name === "HEAVY HOODIE / BLK" ? "/images/hoodieR.webp" : product.img} 
-                      alt={product.name} 
-                      className={`w-full h-full object-contain relative z-10 transition-all duration-700 
+                    <Image
+                      src={stillSrc}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      unoptimized={stillRemote}
+                      className={`object-contain relative z-10 transition-all duration-700 
                         ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
-                      `} 
+                      `}
                     />
                   )}
                   
@@ -258,7 +267,8 @@ export default function StreetwearPage() {
                 <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-[#D70000] z-20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-[#D70000] z-20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </Link>
-            ))}
+            );
+            })}
           </div>
         </div>
 

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="bg-[#050505] border-t border-zinc-900 text-white pt-24 pb-12 relative overflow-hidden font-sans uppercase">
       
       {/* TEXTURA DE FONDO */}
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.02] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.02] mix-blend-overlay bg-grain-noise"></div>
 
       {/* DECORACIÓN TÉCNICA DE FONDO */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.05]" 

@@ -5,7 +5,7 @@ export default function AlianzasPage() {
     <div className="min-h-screen bg-[#0A0A0A] text-white font-sans uppercase pt-32 pb-32 relative">
       
       {/* TEXTURA DE FONDO */}
-      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.02] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.02] mix-blend-overlay bg-grain-noise"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         

@@ -6,7 +6,7 @@ export default function AdnPage() {
     <div className="min-h-screen bg-[#0A0A0A] text-white font-sans uppercase pt-32 pb-40 relative overflow-hidden">
       
       {/* EFECTOS DE FONDO */}
-      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay bg-grain-noise"></div>
       <div className="pointer-events-none fixed inset-0 z-50 opacity-10 mix-blend-overlay bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_3px,4px_100%]"></div>
 
       <div className="absolute inset-0 z-0 opacity-10 pointer-events-none">

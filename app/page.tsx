@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import LazyAutoplayVideo from "@/components/LazyAutoplayVideo";
 
 export default function Home() {
   // Datos de las tarjetas verticales
@@ -30,7 +31,7 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex flex-col font-sans uppercase relative bg-black">
       {/* CAPA DE TEXTURA INDUSTRIAL (GLOBAL) */}
-      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.03] mix-blend-overlay bg-grain-noise"></div>
 
       {/* EFECTOS DE PANTALLA GLOBAL (CRT/Scanlines & Vignette) */}
       <div className="pointer-events-none fixed inset-0 z-50 opacity-20 mix-blend-overlay bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_4px,6px_100%]"></div>
@@ -44,7 +45,7 @@ export default function Home() {
         {/* MARQUESINA SUPERIOR */}
         <div className="w-full bg-[#0A0A0A] text-[#FFFFFF] py-2 z-40 overflow-hidden border-b border-[#D70000]/20 shrink-0">
           <div className="animate-marquee whitespace-nowrap flex items-center gap-10">
-            {[...Array(10)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <span key={i} className="text-xs font-black tracking-[0.2em]">
                 RAZA TECHNICAL CLOTHING • ENVÍOS A TODO EL PAÍS • DISEÑO PERSONALIZADO • CALIDAD
                 INDUSTRIAL • RAZA TECHNICAL CLOTHING •
@@ -71,12 +72,9 @@ export default function Home() {
             
             {/* VIDEO BACKGROUND */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-              <video
+              <LazyAutoplayVideo
                 src="/images/hoodiemuestra.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
+                poster="/LogoRaza.png"
                 className="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-all duration-700"
               />
               <div className="absolute inset-0 bg-black/50"></div>
@@ -119,12 +117,9 @@ export default function Home() {
             
             {/* VIDEO BACKGROUND */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-              <video
+              <LazyAutoplayVideo
                 src="/images/running_compressed.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
+                poster="/LogoRaza.png"
                 className="w-full h-full object-cover grayscale opacity-40 group-hover:opacity-60 transition-all duration-700"
               />
               <div className="absolute inset-0 bg-[#D70000]/50"></div>
@@ -174,7 +169,7 @@ export default function Home() {
         </div>
         
         {/* Glow rojo lateral */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#D70000]/10 rounded-full blur-[120px] pointer-events-none translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#D70000]/10 rounded-full blur-[120px] pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#D70000]/5 rounded-full blur-[100px] pointer-events-none -translate-x-1/2 translate-y-1/2"></div>
 
         {/* LÍNEAS TÁCTICAS VERTICALES */}
@@ -224,6 +219,7 @@ export default function Home() {
                   src={kit.img}
                   alt={kit.id}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-contain opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
                 />
                 

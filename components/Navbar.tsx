@@ -3,6 +3,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { useCart } from "../context/CartContext";
@@ -121,10 +122,13 @@ export default function Navbar() {
         {/* CENTRO: LOGO RAZA */}
         <div className="flex-none absolute left-1/2 -translate-x-1/2">
           <Link href="/" className="group flex flex-col items-center">
-            <img 
-              src="/LogoRaza.png" 
-              alt="RAZA" 
-              className="h-14 w-auto brightness-200 group-hover:brightness-100 transition-all duration-500" 
+            <Image
+              src="/LogoRaza.png"
+              alt="RAZA"
+              width={160}
+              height={56}
+              className="h-14 w-auto brightness-200 group-hover:brightness-100 transition-all duration-500"
+              priority
             />
           </Link>
         </div>

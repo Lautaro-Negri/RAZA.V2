@@ -4,8 +4,8 @@ import "./globals.css";
 
 // Importamos los componentes globales
 import { CartProvider } from "../context/CartContext";
-import CartModal from "../components/CartModal";
 import Navbar from "../components/Navbar";
+import DeferredCartModal from "../components/DeferredCartModal";
 import Footer from "../components/Footer";
 import { Toaster } from "react-hot-toast";
 import WhatsAppButton from "../components/WhatsAppButton";
@@ -66,7 +66,7 @@ export default function RootLayout({
           <Footer />
 
           {/* El Modal del carrito vive aquí, oculto hasta que se lo llame */}
-          <CartModal />
+          <DeferredCartModal />
 
           {/* Botón flotante de WhatsApp */}
           <WhatsAppButton />
