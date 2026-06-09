@@ -49,35 +49,58 @@ export async function handleManifestAction(payload: any) {
     return { success: false, error: error.message };
   }
 
-  // Enviar email con Resend
-  if (contacto.email) {
-    const emailHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #D70000;">✅ Manifiesto Registrado</h2>
-        <p>¡Hola ${contacto.nombreResponsable}!</p>
-        <p>Tu manifiesto ha sido registrado exitosamente en RAZA TECHNICAL CLOTHING.</p>
-        
-        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-          <h3 style="margin-top: 0;">Detalles del Pedido:</h3>
-          <p><strong>Club/Equipo:</strong> ${contacto.nombreClub}</p>
-          <p><strong>Línea:</strong> ${linea}</p>
-          <p><strong>Prendas:</strong> ${prendas.join(', ')}</p>
-          <p><strong>Unidades:</strong> ${jugadores.length}</p>
-          <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
-        </div>
-        
-        <p>Nos pondremos en contacto pronto para confirmar los detalles de tu pedido.</p>
-        <p style="color: #666; font-size: 12px;">Este es un email automático, por favor no respondas directamente.</p>
+  // Enviar email al propietario (no al cliente)
+  const ownerEmail = 'razaindumentariaok@gmail.com';
+  
+  const emailHtml = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #D70000;">📋 NUEVO MANIFIESTO REGISTRADO</h2>
+      <p>Un nuevo pedido ha sido registrado en RAZA TECHNICAL CLOTHING.</p>
+      
+      <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Datos del Solicitante:</h3>
+        <p><strong>Responsable:</strong> ${contacto.nombreResponsable}</p>
+        <p><strong>Club/Equipo:</strong> ${contacto.nombreClub}</p>
+        <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
+        <p><strong>Email:</strong> ${contacto.email || 'No proporcionado'}</p>
       </div>
-    `;
 
-    await resend.emails.send({
-      from: 'noreply@raza.com',
-      to: contacto.email,
-      subject: `Manifiesto Registrado - ${contacto.nombreClub}`,
-      html: emailHtml,
-    });
-  }
+      <div style="background-color: #fff8f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Detalles del Pedido:</h3>
+        <p><strong>Línea:</strong> ${linea}</p>
+        <p><strong>Prendas:</strong> ${prendas.join(', ')}</p>
+        <p><strong>Unidades:</strong> ${jugadores.length}</p>
+        <p><strong>Fecha:</strong> ${new Date(fecha).toLocaleDateString('es-AR')}</p>
+      </div>
+
+      <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #D70000;">
+        <h3 style="margin-top: 0;">Jugadores/Unidades:</h3>
+        <table style="width: 100%; font-size: 12px;">
+          <tr style="border-bottom: 1px solid #ddd;">
+            <td style="padding: 5px;"><strong>N°</strong></td>
+            <td style="padding: 5px;"><strong>Nombre</strong></td>
+            <td style="padding: 5px;"><strong>Número</strong></td>
+          </tr>
+          ${jugadores.map((j: any, i: number) => `
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 5px;">${String(i + 1).padStart(2, '0')}</td>
+              <td style="padding: 5px;">${j.name || '-'}</td>
+              <td style="padding: 5px;">${j.number || '-'}</td>
+            </tr>
+          `).join('')}
+        </table>
+      </div>
+
+      <p style="margin-top: 30px; color: #666; font-size: 12px;">⏰ Accede al panel de admin para gestionar este pedido.</p>
+    </div>
+  `;
+
+  await resend.emails.send({
+    from: 'noreply@raza.com',
+    to: ownerEmail,
+    subject: `📋 Nuevo Manifiesto: ${contacto.nombreClub} - ${linea}`,
+    html: emailHtml,
+  });
 
   revalidatePath('/admin'); // Para que aparezca el nuevo pedido al instante
   return { success: true };
