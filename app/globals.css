@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+/* Ruido embebido: evita fetch a dominios externos en cada página */
+.bg-grain-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+html, body {
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Opcional: Para el suavizado de tipografías pesadas */
+h1 {
+  -webkit-font-smoothing: antialiased;
+}
+
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  /* Cambiamos de 20s a 60s para que sea más lento */
+  animation: marquee 60s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+    transform: none;
+  }
+}
