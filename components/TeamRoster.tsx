@@ -69,7 +69,6 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
     contactInfo.nombreResponsable.trim() !== "" &&
     contactInfo.nombreClub.trim() !== "" &&
     contactInfo.telefono.trim() !== "" &&
-    contactInfo.email.includes("@") &&
     players.length >= MIN_PLAYERS;
 
   // 5. ENVÍO A BASE DE DATOS MEDIANTE SERVER ACTION

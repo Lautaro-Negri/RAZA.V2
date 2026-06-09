@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase"; // Usamos tu misma librería
 import { revalidatePath } from "next/cache";
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { Resend } from 'resend';
 
 async function createAuthClient() {
   const cookieStore = await cookies();
@@ -23,6 +24,8 @@ async function createAuthClient() {
     }
   );
 }
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function handleManifestAction(payload: any) {
   // Desestructuramos para que coincida con tus columnas de la DB
@@ -44,6 +47,36 @@ export async function handleManifestAction(payload: any) {
   if (error) {
     console.error("Error en carga de manifiesto:", error.message);
     return { success: false, error: error.message };
+  }
+
+  // Enviar email con Resend
+  if (contacto.email) {
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #D70000;">✅ Manifiesto Registrado</h2>
+        <p>¡Hola ${contacto.nombreResponsable}!</p>
+        <p>Tu manifiesto ha sido registrado exitosamente en RAZA TECHNICAL CLOTHING.</p>
+        
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <h3 style="margin-top: 0;">Detalles del Pedido:</h3>
+          <p><strong>Club/Equipo:</strong> ${contacto.nombreClub}</p>
+          <p><strong>Línea:</strong> ${linea}</p>
+          <p><strong>Prendas:</strong> ${prendas.join(', ')}</p>
+          <p><strong>Unidades:</strong> ${jugadores.length}</p>
+          <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
+        </div>
+        
+        <p>Nos pondremos en contacto pronto para confirmar los detalles de tu pedido.</p>
+        <p style="color: #666; font-size: 12px;">Este es un email automático, por favor no respondas directamente.</p>
+      </div>
+    `;
+
+    await resend.emails.send({
+      from: 'noreply@raza.com',
+      to: contacto.email,
+      subject: `Manifiesto Registrado - ${contacto.nombreClub}`,
+      html: emailHtml,
+    });
   }
 
   revalidatePath('/admin'); // Para que aparezca el nuevo pedido al instante
