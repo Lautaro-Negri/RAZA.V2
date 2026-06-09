@@ -167,7 +167,7 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
                 <th className="p-3 w-10">ID</th>
                 <th className="p-3">NOMBRE (ESPALDA)</th>
                 <th className="p-3 w-20 text-center">N°</th>
-                {selectedKit.map(item => (
+                {selectedKit.filter(item => item !== "MEDIAS").map(item => (
                   <th key={item} className="p-3 w-28 text-center text-[#D70000] border-l border-gray-900">{item}</th>
                 ))}
                 <th className="p-3 w-10"></th>
@@ -195,7 +195,7 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
                       className="bg-transparent border-b border-gray-900 w-full p-2 text-white text-center focus:border-[#D70000] outline-none"
                     />
                   </td>
-                  {selectedKit.map(item => (
+                  {selectedKit.filter(item => item !== "MEDIAS").map(item => (
                     <td key={item} className="p-2 border-l border-gray-900/50">
                       <select 
                         value={player.sizes[item] || ""}
