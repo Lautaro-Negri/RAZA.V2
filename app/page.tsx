@@ -28,6 +28,17 @@ export default function Home() {
     },
   ];
 
+  const clubLogos = [
+    { id: "buzoAlgodon", slug: "buzo-algodon", title: "Buzo Algodón", src: "/LogoRaza.png" },
+    { id: "CAMISETATÉRMICA", slug: "camiseta-termica", title: "Camiseta Térmica", src: "/LogoRaza.png" },
+    { id: "conjunto", slug: "conjunto", title: "Conjunto", src: "/LogoRaza.png" },
+    { id: "hoodieR", slug: "hoodie-r", title: "Hoodie R", src: "/LogoRaza.png" },
+    { id: "mediasPotrero", slug: "medias-potrero", title: "Medias Potrero", src: "/LogoRaza.png" },
+    { id: "remeraalgodon", slug: "remera-algodon", title: "Remera Algodón", src: "/LogoRaza.png" },
+    { id: "remeraPotrero", slug: "remera-potrero", title: "Remera Potrero", src: "/LogoRaza.png" },
+    { id: "shortPotrero", slug: "short-potrero", title: "Short Potrero", src: "/LogoRaza.png" },
+  ];
+
   return (
     <main className="min-h-screen w-full flex flex-col font-sans uppercase relative bg-black">
       {/* CAPA DE TEXTURA INDUSTRIAL (GLOBAL) */}
@@ -176,14 +187,44 @@ export default function Home() {
         <div className="absolute left-6 md:left-10 top-0 w-px h-full bg-gradient-to-b from-transparent via-gray-800 to-transparent opacity-50 pointer-events-none"></div>
         <div className="absolute right-6 md:right-10 top-0 w-px h-full bg-gradient-to-b from-transparent via-gray-800 to-transparent opacity-50 pointer-events-none"></div>
 
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-6">
-          <div className="border-l-4 border-[#D70000] pl-6">
-            <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none">
-              LÍNEAS DE <span className="text-[#D70000]">JUEGO</span>
-            </h2>
-            <p className="text-gray-500 font-bold text-[10px] tracking-[0.5em] mt-4 italic">
-              // PERFORMANCE KITS INDUSTRIAL COLLECTION
-            </p>
+        <div className="flex flex-col md:flex-row justify-between items-start mb-20 gap-6">
+          <div className="w-full">
+            <div className="border-l-4 border-[#D70000] pl-6 mb-10">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none">
+                CADA ESCUDO,
+                <br />
+                <span className="text-[#D70000]">NUESTRA HISTORIA</span>
+              </h2>
+              <p className="text-gray-500 font-bold text-[10px] tracking-[0.5em] mt-4 italic">
+                // PERFORMANCE KITS INDUSTRIAL COLLECTION
+              </p>
+            </div>
+
+            <div className="mb-10 overflow-hidden rounded-[8px] border border-white/10 bg-[#080808]/80 pause-on-hover">
+              <div className="animate-marquee flex items-center gap-5 py-6 px-4 min-w-full">
+                {[...clubLogos, ...clubLogos].map((club, index) => (
+                  <Link
+                    key={`${club.id}-${index}`}
+                    href={`/club/${club.slug}`}
+                    className="group relative min-w-[220px] aspect-square border border-white/10 overflow-hidden shadow-[0_0_35px_rgba(0,0,0,0.45)] transition-all duration-300 ease-out hover:scale-[1.03] hover:border-[#D70000]/80 hover:shadow-[0_0_45px_rgba(215,0,0,0.5)] cursor-pointer"
+                    aria-label={`Ver página de ${club.title}`}
+                  >
+                    <div className="absolute inset-0 opacity-0 bg-[#D70000]/10 transition-opacity duration-300 group-hover:opacity-100 pointer-events-none" />
+                    <div className="relative w-full h-full p-4 flex items-center justify-center">
+                      <div className="relative w-full h-full max-w-[160px] max-h-[160px] transition-transform duration-500 group-hover:scale-105">
+                        <Image
+                          src={club.src}
+                          alt={club.title}
+                          fill
+                          sizes="220px"
+                          className="object-contain"
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
           <Link
             href="/deportiva"
@@ -191,6 +232,15 @@ export default function Home() {
           >
             EXPLORAR TODAS LAS LÍNEAS
           </Link>
+        </div>
+
+        <div className="border-l-4 border-[#D70000] pl-6 mb-10">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter italic leading-none">
+            LÍNEAS DE <span className="text-[#D70000]">JUEGO</span>
+          </h2>
+          <p className="text-gray-500 font-bold text-[10px] tracking-[0.5em] mt-4 italic">
+            // PERFORMANCE KITS INDUSTRIAL COLLECTION
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
