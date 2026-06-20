@@ -1,7 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const clubPages = {
+type ClubPageData = {
+  title: string;
+  description: string;
+  image: string;
+};
+
+const clubPages: Record<string, ClubPageData> = {
   "buzo-algodon": {
     title: "Buzo Algodón",
     description: "Explorá la colección premium de buzos técnicos con estilo industrial y performance de alto impacto.",
