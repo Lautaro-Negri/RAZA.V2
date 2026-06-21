@@ -29,13 +29,13 @@ export default function Home() {
   ];
 
   const clubLogos = [
-    { id: "buzoAlgodon", slug: "buzo-algodon", title: "Buzo Algodón", src: "/LogoRaza.png" },
-    { id: "CAMISETATÉRMICA", slug: "camiseta-termica", title: "Camiseta Térmica", src: "/LogoRaza.png" },
-    { id: "conjunto", slug: "conjunto", title: "Conjunto", src: "/LogoRaza.png" },
-    { id: "hoodieR", slug: "hoodie-r", title: "Hoodie R", src: "/LogoRaza.png" },
-    { id: "mediasPotrero", slug: "medias-potrero", title: "Medias Potrero", src: "/LogoRaza.png" },
-    { id: "remeraalgodon", slug: "remera-algodon", title: "Remera Algodón", src: "/LogoRaza.png" },
-    { id: "remeraPotrero", slug: "remera-potrero", title: "Remera Potrero", src: "/LogoRaza.png" },
+    { id: "buzoAlgodon", slug: "buzo-algodon", title: "Buzo Algodón", src: "/burbuja.ico" },
+    { id: "CAMISETATÉRMICA", slug: "camiseta-termica", title: "Camiseta Térmica", src: "/indep.ico" },
+    { id: "conjunto", slug: "conjunto", title: "Conjunto", src: "/juventud.ico" },
+    { id: "hoodieR", slug: "hoodie-r", title: "Hoodie R", src: "/LDLC.ico" },
+    { id: "mediasPotrero", slug: "medias-potrero", title: "Medias Potrero", src: "/luzyf.ico" },
+    { id: "remeraalgodon", slug: "remera-algodon", title: "Remera Algodón", src: "/SanMartin.ico" },
+    { id: "remeraPotrero", slug: "remera-potrero", title: "Remera Potrero", src: "/sierrachica.ico" },
     { id: "shortPotrero", slug: "short-potrero", title: "Short Potrero", src: "/LogoRaza.png" },
   ];
 
