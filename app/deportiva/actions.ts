@@ -28,82 +28,100 @@ async function createAuthClient() {
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function handleManifestAction(payload: any) {
-  // Desestructuramos para que coincida con tus columnas de la DB
-  const { contacto, jugadores, linea, prendas, fecha } = payload;
+  try {
+    if (!payload || typeof payload !== "object") {
+      return { success: false, error: "Payload inválido." };
+    }
 
-  const { data, error } = await supabase
-    .from('manifiestos') // La tabla que acabas de crear
-    .insert([{
-      nombre_responsable: contacto.nombreResponsable,
-      nombre_club: contacto.nombreClub,
-      telefono: contacto.telefono,
-      email: contacto.email,
-      linea: linea,
-      prendas: prendas, 
-      jugadores: jugadores, 
-      fecha_envio: fecha
-    }]);
+    const { contacto, jugadores, linea, prendas, fecha } = payload;
 
-  if (error) {
-    console.error("Error en carga de manifiesto:", error.message);
-    return { success: false, error: error.message };
-  }
+    if (!contacto?.nombreResponsable || !contacto?.nombreClub || !contacto?.telefono || !linea || !Array.isArray(prendas) || !Array.isArray(jugadores)) {
+      return { success: false, error: "Faltan datos obligatorios en el protocolo de carga." };
+    }
 
-  // Enviar email al propietario (no al cliente)
-  const ownerEmail = 'razaindumentariaok@gmail.com';
-  
-  const emailHtml = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #D70000;">📋 NUEVO MANIFIESTO REGISTRADO</h2>
-      <p>Un nuevo pedido ha sido registrado en RAZA TECHNICAL CLOTHING.</p>
-      
-      <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
-        <h3 style="margin-top: 0;">Datos del Solicitante:</h3>
-        <p><strong>Responsable:</strong> ${contacto.nombreResponsable}</p>
-        <p><strong>Club/Equipo:</strong> ${contacto.nombreClub}</p>
-        <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
-        <p><strong>Email:</strong> ${contacto.email || 'No proporcionado'}</p>
-      </div>
+    const { data, error } = await supabase
+      .from('manifiestos')
+      .insert([{ 
+        nombre_responsable: contacto.nombreResponsable,
+        nombre_club: contacto.nombreClub,
+        telefono: contacto.telefono,
+        email: contacto.email,
+        linea: linea,
+        prendas: prendas,
+        jugadores: jugadores,
+        fecha_envio: fecha,
+      }]);
 
-      <div style="background-color: #fff8f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
-        <h3 style="margin-top: 0;">Detalles del Pedido:</h3>
-        <p><strong>Línea:</strong> ${linea}</p>
-        <p><strong>Prendas:</strong> ${prendas.join(', ')}</p>
-        <p><strong>Unidades:</strong> ${jugadores.length}</p>
-        <p><strong>Fecha:</strong> ${new Date(fecha).toLocaleDateString('es-AR')}</p>
-      </div>
+    if (error) {
+      console.error("Error en carga de manifiesto:", error.message);
+      return { success: false, error: error.message };
+    }
 
-      <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #D70000;">
-        <h3 style="margin-top: 0;">Jugadores/Unidades:</h3>
-        <table style="width: 100%; font-size: 12px;">
-          <tr style="border-bottom: 1px solid #ddd;">
-            <td style="padding: 5px;"><strong>N°</strong></td>
-            <td style="padding: 5px;"><strong>Nombre</strong></td>
-            <td style="padding: 5px;"><strong>Número</strong></td>
-          </tr>
-          ${jugadores.map((j: any, i: number) => `
-            <tr style="border-bottom: 1px solid #eee;">
-              <td style="padding: 5px;">${String(i + 1).padStart(2, '0')}</td>
-              <td style="padding: 5px;">${j.name || '-'}</td>
-              <td style="padding: 5px;">${j.number || '-'}</td>
+    const ownerEmail = 'razaindumentariaok@gmail.com';
+    const emailHtml = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #D70000;">📋 NUEVO MANIFIESTO REGISTRADO</h2>
+        <p>Un nuevo pedido ha sido registrado en RAZA TECHNICAL CLOTHING.</p>
+        
+        <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <h3 style="margin-top: 0;">Datos del Solicitante:</h3>
+          <p><strong>Responsable:</strong> ${contacto.nombreResponsable}</p>
+          <p><strong>Club/Equipo:</strong> ${contacto.nombreClub}</p>
+          <p><strong>Teléfono:</strong> ${contacto.telefono}</p>
+          <p><strong>Email:</strong> ${contacto.email || 'No proporcionado'}</p>
+        </div>
+
+        <div style="background-color: #fff8f8; padding: 15px; border-radius: 5px; margin: 20px 0;">
+          <h3 style="margin-top: 0;">Detalles del Pedido:</h3>
+          <p><strong>Línea:</strong> ${linea}</p>
+          <p><strong>Prendas:</strong> ${prendas.join(', ')}</p>
+          <p><strong>Unidades:</strong> ${jugadores.length}</p>
+          <p><strong>Fecha:</strong> ${new Date(fecha).toLocaleDateString('es-AR')}</p>
+        </div>
+
+        <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #D70000;">
+          <h3 style="margin-top: 0;">Jugadores/Unidades:</h3>
+          <table style="width: 100%; font-size: 12px;">
+            <tr style="border-bottom: 1px solid #ddd;">
+              <td style="padding: 5px;"><strong>N°</strong></td>
+              <td style="padding: 5px;"><strong>Nombre</strong></td>
+              <td style="padding: 5px;"><strong>Número</strong></td>
             </tr>
-          `).join('')}
-        </table>
+            ${jugadores.map((j: any, i: number) => `
+              <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 5px;">${String(i + 1).padStart(2, '0')}</td>
+                <td style="padding: 5px;">${j.name || '-'}</td>
+                <td style="padding: 5px;">${j.number || '-'}</td>
+              </tr>
+            `).join('')}
+          </table>
+        </div>
+
+        <p style="margin-top: 30px; color: #666; font-size: 12px;">⏰ Accede al panel de admin para gestionar este pedido.</p>
       </div>
+    `;
 
-      <p style="margin-top: 30px; color: #666; font-size: 12px;">⏰ Accede al panel de admin para gestionar este pedido.</p>
-    </div>
-  `;
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY no está configurada. El email no se envió.");
+    } else {
+      try {
+        await resend.emails.send({
+          from: 'noreply@raza.com',
+          to: ownerEmail,
+          subject: `📋 Nuevo Manifiesto: ${contacto.nombreClub} - ${linea}`,
+          html: emailHtml,
+        });
+      } catch (sendError: any) {
+        console.error("Error al enviar email de notificación:", sendError?.message || sendError);
+      }
+    }
 
-  await resend.emails.send({
-    from: 'noreply@raza.com',
-    to: ownerEmail,
-    subject: `📋 Nuevo Manifiesto: ${contacto.nombreClub} - ${linea}`,
-    html: emailHtml,
-  });
-
-  revalidatePath('/admin'); // Para que aparezca el nuevo pedido al instante
-  return { success: true };
+    revalidatePath('/admin'); // Para que aparezca el nuevo pedido al instante
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error en handleManifestAction:", error?.message || error);
+    return { success: false, error: error?.message || "Error inesperado al procesar el manifiesto." };
+  }
 }
 export async function updateOrderStatus(id: number, nuevoEstado: string) {
   const supabaseAuth = await createAuthClient();

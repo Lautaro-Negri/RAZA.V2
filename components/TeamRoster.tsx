@@ -64,6 +64,8 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
     ));
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // 4. LÓGICA DE VALIDACIÓN DEL MANIFIESTO
   const isFormValid = 
     contactInfo.nombreResponsable.trim() !== "" &&
@@ -73,8 +75,10 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
 
   // 5. ENVÍO A BASE DE DATOS MEDIANTE SERVER ACTION
   const handleSendManifest = async () => {
-    if (!isFormValid) return;
-    
+    if (!isFormValid || isSubmitting) return;
+
+    setIsSubmitting(true);
+
     const payload = {
       fecha: new Date().toISOString(),
       linea: selectedLine,
@@ -83,14 +87,19 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
       jugadores: players
     };
 
-    // Llamamos a la función del servidor que interactúa con Supabase
-    const result = await handleManifestAction(payload);
+    try {
+      const result = await handleManifestAction(payload);
 
-    if (result.success) {
-      alert("✅ MANIFIESTO REGISTRADO: Los datos se han cargado en la tabla 'manifiestos'.");
-      // Opcional: podrías resetear el estado aquí
-    } else {
-      alert("❌ ERROR TÉCNICO: " + result.error);
+      if (result.success) {
+        alert("✅ MANIFIESTO REGISTRADO: Los datos se han cargado en la tabla 'manifiestos'.");
+      } else {
+        alert("❌ ERROR TÉCNICO: " + (result.error || "No se pudo enviar la solicitud."));
+      }
+    } catch (error) {
+      console.error("Error en handleSendManifest:", error);
+      alert("❌ ERROR INESPERADO: Revisa la consola del navegador o el servidor.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -245,15 +254,15 @@ export default function TeamRoster({ selectedLine, selectedKit }: { selectedLine
         </div>
         
         <button 
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting}
           onClick={handleSendManifest}
           className={`px-12 py-5 font-black text-xs tracking-[0.4em] uppercase transition-all duration-500
-            ${isFormValid 
-              ? "bg-[#D70000] text-black hover:bg-white cursor-pointer shadow-[0_0_20px_rgba(215,0,0,0.2)]" 
+            ${isFormValid && !isSubmitting
+              ? "bg-[#D70000] text-black hover:bg-white cursor-pointer shadow-[0_0_20px_rgba(215,0,0,0.2)]"
               : "bg-zinc-900 text-gray-700 cursor-not-allowed border border-gray-800"
             }`}
         >
-          {isFormValid ? "REGISTRAR Y ENVIAR" : "SISTEMA BLOQUEADO"}
+          {isSubmitting ? "REGISTRANDO..." : isFormValid ? "REGISTRAR Y ENVIAR" : "SISTEMA BLOQUEADO"}
         </button>
       </div>
 
