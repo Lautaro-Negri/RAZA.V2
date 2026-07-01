@@ -26,9 +26,11 @@ const LineCard = memo(function LineCard({
         src={data.img}
         alt={data.id}
         fill
-        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 200px"
+        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 320px"
+        quality={100}
+        unoptimized
         className={`object-cover transition-all duration-700 z-0
-          ${active ? "opacity-100 scale-105" : "opacity-30 grayscale group-hover:opacity-50 group-hover:scale-105"}
+          ${active ? "opacity-100 scale-105" : "opacity-100 group-hover:opacity-100 group-hover:scale-105"}
         `}
       />
 
@@ -78,15 +80,15 @@ export default function DeportivaPage() {
   const [currentGarmentIndex, setCurrentGarmentIndex] = useState(0);
 
   const performanceLines = [
-    { id: "POTRERO", label: "GAME_01", img: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=800&auto=format&fit=crop" },
-    { id: "CENIT", label: "GAME_02", img: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=800&auto=format&fit=crop" },
-    { id: "INSIGNIA", label: "GAME_03", img: "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?q=80&w=800&auto=format&fit=crop" },
+    { id: "POTRERO", label: "GAME_01", img: "/images/potreroportada.webp" },
+    { id: "CENIT", label: "GAME_02", img: "/images/cenitportada.webp" },
+    { id: "INSIGNIA", label: "GAME_03", img: "/images/insigniaportada.webp" },
   ];
 
   const staffLines = [
-    { id: "INSTITUCIONAL", label: "STAFF_01", img: "https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=800&auto=format&fit=crop" },
-    { id: "REPRESENTATIVO", label: "STAFF_02", img: "https://images.unsplash.com/photo-1483389127117-b6a2102724ae?q=80&w=800&auto=format&fit=crop" },
-    { id: "ACCESORIOS", label: "GEAR_01", img: "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=800&auto=format&fit=crop" },
+    { id: "INSTITUCIONAL", label: "STAFF_01", img: "/images/institucionalportada.webp" },
+    { id: "REPRESENTATIVO", label: "STAFF_02", img: "/images/representativoportada.webp" },
+    { id: "ACCESORIOS", label: "GEAR_01", img: "/images/accesoriosportada.webp" },
   ];
 
   const garmentData: Record<string, string> = {
