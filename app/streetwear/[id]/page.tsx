@@ -12,9 +12,14 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
   const { id } = use(params);
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState("L");
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
   // Buscar producto
   const product = products.find(p => p.id === id);
+
+  const galleryImages = (product?.images?.length ? product.images : [product?.img]).filter(Boolean) as string[];
+  const selectedImage = galleryImages[selectedImageIndex] || product?.img || "/LogoRaza.png";
+  const shouldUseVideo = product?.category === "HOODIES" && product?.id !== "st-002" && selectedImageIndex === 0;
 
   if (!product) {
     return (
@@ -55,10 +60,10 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
           {/* RAZZA Vertical Gigante */}
           <div 
-            className="absolute left-6 bottom-10 z-20 rotate-180 select-none"
+            className="absolute left-0 bottom-36 z-20 rotate-180 select-none"
             style={{ writingMode: 'vertical-rl' }}
           >
-            <span className="text-6xl md:text-8xl lg:text-9xl font-black italic tracking-tighter text-[#D70000]">
+            <span className="text-6xl md:text-8xl lg:text-9xl font-black italic tracking-tighter text-[#D70000]/70 leading-none">
               RAZA
             </span>
           </div>
@@ -72,28 +77,47 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
           </div>
 
           {/* Imagen de Producto (Z-10 para estar por encima de la grilla) */}
-          <div className="w-[70%] h-[80%] relative z-10">
-            {product.category === "HOODIES" && product.id !== "st-002" ? (
-              <LazyAutoplayVideo
-                src="/images/hoodiemuestra.mp4"
-                poster="/LogoRaza.png"
-                className={`w-full h-full object-cover drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
-                  ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
-                `}
-              />
-            ) : (
-              <Image
-                src={
-                  product.img ||
-                  "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop"
-                }
-                alt={product.name}
-                fill
-                sizes="(max-width: 1024px) 70vw, 40vw"
-                className={`object-contain drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
-                  ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
-                `}
-              />
+          <div className="w-[88%] h-[90%] relative z-10 flex flex-col items-center gap-3">
+            <div className="relative w-full h-full border border-[#D70000]/60 bg-[#060606] shadow-[0_0_30px_rgba(215,0,0,0.15)]">
+              {shouldUseVideo ? (
+                <LazyAutoplayVideo
+                  src="/images/hoodiemuestra.mp4"
+                  poster="/LogoRaza.png"
+                  className={`w-full h-full object-cover drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
+                    ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
+                  `}
+                />
+              ) : (
+                <Image
+                  src={selectedImage}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 1024px) 70vw, 40vw"
+                  className={`w-full h-full object-cover drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
+                    ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
+                  `}
+                />
+              )}
+            </div>
+
+            {galleryImages.length > 1 && (
+              <div className="w-full flex flex-wrap justify-center gap-2 border border-zinc-800/80 bg-black/70 px-3 py-3 backdrop-blur-sm shadow-[0_0_20px_rgba(0,0,0,0.35)]">
+                {galleryImages.map((image, index) => (
+                  <button
+                    key={`${product.id}-${index}`}
+                    onClick={() => setSelectedImageIndex(index)}
+                    className={`relative h-14 w-14 overflow-hidden border transition-all duration-300 ${selectedImageIndex === index ? 'border-[#D70000] scale-105 shadow-[0_0_15px_rgba(215,0,0,0.25)]' : 'border-zinc-700 hover:border-[#D70000]/70 hover:scale-102'}`}
+                  >
+                    <Image
+                      src={image}
+                      alt={`${product.name} ${index + 1}`}
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
             )}
           </div>
         </div>

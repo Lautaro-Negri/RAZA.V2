@@ -9,6 +9,11 @@ export const products = [
     tag: "NEW DROP",
     serial: "RAZA-ST-001",
     img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop"
+    ],
     specs: [
       "Jersey de algodón 24/1 peinado",
       "Corte Boxy Fit con cuello ancho",
@@ -27,6 +32,11 @@ export const products = [
     tag: "LIMITED",
     serial: "RAZA-ST-002",
     img: "/images/hoodieR.webp",
+    images: [
+      "/images/buzofrente.webp",
+      "/images/buzoAlgodon.webp",
+      "/images/buzo2.webp"
+    ],
     specs: [
       "Algodón pesado 400g / Rustico Premium",
       "Corte Boxy Fit con hombros caídos",
@@ -45,6 +55,11 @@ export const products = [
     tag: "ESSENTIAL",
     serial: "RAZA-ST-003",
     img: "https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=800&auto=format&fit=crop"
+    ],
     specs: [
       "Tela Ripstop antidesgarro",
       "6 bolsillos funcionales",
@@ -63,6 +78,11 @@ export const products = [
     tag: "NEW DROP",
     serial: "RAZA-ST-004",
     img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=800&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1521369909024-2afc2965a000?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop"
+    ],
     specs: [
       "Gabardina de algodón 100%",
       "Cierre ajustable metálico",
