@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import LazyAutoplayVideo from "@/components/LazyAutoplayVideo"; 
+import { products as catalogProducts } from "../../data/products";
 
 // =========================================
 // COMPONENTE: RELOJ COMPACTO (Rediseñado para el nuevo Header Central)
@@ -45,31 +46,45 @@ function DropCountdown({ targetDate }: { targetDate: string }) {
 }
 
 export default function StreetwearPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [productsList, setProductsList] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [loading, setLoading] = useState(true);
   const categories = ["ALL", "REMERAS", "HOODIES", "PANTALONES", "ACCESORIOS"];
 
-  // 1. CARGA DE PRODUCTOS DESDE SUPABASE
   useEffect(() => {
     async function loadProducts() {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('streetwear_products')
-        .select('*')
+        .select('id, stock, sold_out')
         .order('created_at', { ascending: true });
 
-      if (data) {
-        setProducts(data);
-      }
+      const stockMap = new Map<string, { stock: number; sold_out: boolean }>();
+      data?.forEach((row: any) => {
+        stockMap.set(row.id, {
+          stock: Number(row.stock ?? 0),
+          sold_out: Boolean(row.sold_out)
+        });
+      });
+
+      const mergedProducts = catalogProducts.map((product) => {
+        const stockState = stockMap.get(product.id);
+        return {
+          ...product,
+          stock: stockState ? Number(stockState.stock) : Number(product.stock ?? 0),
+          sold_out: stockState ? Boolean(stockState.sold_out) : Boolean(product.soldOut)
+        };
+      });
+
+      setProductsList(mergedProducts);
       setLoading(false);
     }
+
     loadProducts();
   }, []);
 
-  // 2. FILTRADO POR CATEGORÍA
-  const filteredProducts = activeCategory === "ALL" 
-    ? products 
-    : products.filter(p => p.category === activeCategory);
+  const filteredProducts = activeCategory === "ALL"
+    ? productsList
+    : productsList.filter((p) => p.category === activeCategory);
 
   if (loading) {
     return (
@@ -121,7 +136,7 @@ export default function StreetwearPage() {
             <div className="flex flex-col gap-2 font-mono text-[9px] text-gray-500 tracking-[0.4em] lg:border-r lg:border-zinc-800 lg:pr-12 h-full lg:justify-center">
               <span className="text-white font-black">// DROP_REFERENCE::</span>
               <span className="text-[#D70000] text-sm font-black italic font-sans tracking-tight leading-none mb-3">RZA_DROP_001_2026</span>
-              <span>// TOTAL_PIECES_COUNTED::{String(products.length).padStart(2, '0')}</span>
+              <span>// TOTAL_PIECES_COUNTED::{String(productsList.length).padStart(2, '0')}</span>
               <span>// SYSTEM_VERSION::2.1</span>
             </div>
 
@@ -191,11 +206,32 @@ export default function StreetwearPage() {
                 `}
               >
                 {/* Visual del Producto */}
-                <div className="aspect-[4/5] relative flex items-center justify-center p-8 bg-[#030303] overflow-hidden">
+                <div className="aspect-[4/5] relative flex items-center justify-center bg-[#030303] overflow-hidden">
                   <div className="absolute left-1/2 top-0 w-px h-full bg-[#D70000]/20 pointer-events-none"></div>
                   <div className="absolute left-0 top-1/2 w-full h-px bg-[#D70000]/20 pointer-events-none"></div>
 
-                  {product.category === "HOODIES" && product.name !== "HEAVY HOODIE / BLK" ? (
+                  {product.category === "HOODIES" && product.name === "HEAVY HOODIE / BLK" ? (
+                    <Image
+                      src={stillSrc}
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      unoptimized={stillRemote}
+                      className={`object-cover w-full h-full relative z-10 transition-all duration-700 
+                        ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
+                      `}
+                    />
+                  ) : product.name === "OVERSIZED HOODIE / 01" ? (
+                    <Image
+                      src="/images/over.webp"
+                      alt={product.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                      className={`object-cover w-full h-full relative z-10 transition-all duration-700 
+                        ${product.sold_out ? 'opacity-20' : 'grayscale group-hover:grayscale-0 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(215,0,0,0.1)]'}
+                      `}
+                    />
+                  ) : product.category === "HOODIES" ? (
                     <LazyAutoplayVideo
                       src="/images/hoodiemuestra.mp4"
                       poster="/LogoRaza.png"

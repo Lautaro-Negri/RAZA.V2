@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { updateStreetwearStock } from "../deportiva/actions";
+import { products as catalogProducts } from "../../data/products";
 
 export default function StreetwearStock() {
   const [products, setProducts] = useState<any[]>([]);
@@ -15,7 +16,17 @@ export default function StreetwearStock() {
 
   async function fetchProducts() {
     const { data } = await supabase.from('streetwear_products').select('*').order('created_at', { ascending: true });
-    if (data) setProducts(data);
+
+    const mergedProducts = catalogProducts.map((product) => {
+      const dbProduct = data?.find((row: any) => row.id === product.id);
+      return {
+        ...product,
+        stock: dbProduct ? Number(dbProduct.stock ?? 0) : Number(product.stock ?? 0),
+        sold_out: dbProduct ? Boolean(dbProduct.sold_out) : Boolean(product.soldOut)
+      };
+    });
+
+    setProducts(mergedProducts);
     setLoading(false);
   }
 

@@ -1,25 +1,56 @@
 // app/streetwear/[id]/page.tsx
 "use client";
 
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "../../../context/CartContext";
 import { products } from "../../../data/products";
 import LazyAutoplayVideo from "@/components/LazyAutoplayVideo";
+import { supabase } from "@/lib/supabase";
 
 export default function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { addToCart } = useCart();
   const [selectedSize, setSelectedSize] = useState("L");
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [stockState, setStockState] = useState<{ stock: number; soldOut: boolean } | null>(null);
   
   // Buscar producto
   const product = products.find(p => p.id === id);
+  const productId = product?.id;
+
+  useEffect(() => {
+    if (!productId) return;
+
+    async function loadStockState() {
+      const { data } = await supabase
+        .from('streetwear_products')
+        .select('stock, sold_out')
+        .eq('id', productId)
+        .maybeSingle();
+
+      if (data) {
+        setStockState({
+          stock: Number(data.stock ?? 0),
+          soldOut: Boolean(data.sold_out)
+        });
+      } else if (product) {
+        setStockState({
+          stock: Number(product.stock ?? 0),
+          soldOut: Boolean(product.soldOut)
+        });
+      }
+    }
+
+    loadStockState();
+  }, [product?.id]);
 
   const galleryImages = (product?.images?.length ? product.images : [product?.img]).filter(Boolean) as string[];
   const selectedImage = galleryImages[selectedImageIndex] || product?.img || "/LogoRaza.png";
-  const shouldUseVideo = product?.category === "HOODIES" && product?.id !== "st-002" && selectedImageIndex === 0;
+  const shouldUseVideo = product?.category === "HOODIES" && product?.id !== "st-002" && product?.id !== "st-001" && selectedImageIndex === 0;
+  const isSoldOut = stockState ? stockState.soldOut : Boolean(product?.soldOut);
+  const stockCount = stockState ? stockState.stock : Number(product?.stock ?? 0);
 
   if (!product) {
     return (
@@ -84,7 +115,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                   src="/images/hoodiemuestra.mp4"
                   poster="/LogoRaza.png"
                   className={`w-full h-full object-cover drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
-                    ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
+                    ${isSoldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
                   `}
                 />
               ) : (
@@ -94,7 +125,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                   fill
                   sizes="(max-width: 1024px) 70vw, 40vw"
                   className={`w-full h-full object-cover drop-shadow-[0_0_30px_rgba(215,0,0,0.2)] 
-                    ${product.soldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
+                    ${isSoldOut ? 'grayscale opacity-30' : 'grayscale hover:grayscale-0 transition-all duration-700'}
                   `}
                 />
               )}
@@ -186,15 +217,15 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
             {/* Botón de Compra */}
             <button 
-              disabled={product.soldOut}
+              disabled={isSoldOut}
               onClick={() => addToCart({ ...product, size: selectedSize })}
               className={`w-full py-6 font-black tracking-[0.4em] text-sm transition-all
-                ${product.soldOut 
+                ${isSoldOut 
                   ? 'bg-zinc-900 text-zinc-700 cursor-not-allowed border border-zinc-800' 
                   : 'bg-[#D70000] text-black hover:bg-white active:scale-95 shadow-[0_10px_30px_rgba(215,0,0,0.2)]'
                 }`}
             >
-              {product.soldOut ? "PIEZA_AGOTADA" : "RECLAMAR PIEZA ↓"}
+              {isSoldOut ? "PIEZA_AGOTADA" : "RECLAMAR PIEZA ↓"}
             </button>
 
             {/* HUD Footer Decorativo */}

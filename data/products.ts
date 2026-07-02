@@ -2,17 +2,17 @@
 export const products = [
   {
     id: "st-001",
-    name: "OVERSIZED TEE / 01",
+    name: "OVERSIZED HOODIE / 01",
     price: 25000,
-    description: "JERSEY DE ALGODÓN PEINADO",
-    category: "REMERAS",
+    description: "HOODIE DE ALGODÓN",
+    category: "HOODIES",
     tag: "NEW DROP",
     serial: "RAZA-ST-001",
-    img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop",
+    img: "/images/over.webp",
     images: [
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=800&auto=format&fit=crop"
+      "/images/over.webp",
+      "/images/over2.webp",
+      "/images/over3.webp"
     ],
     specs: [
       "Jersey de algodón 24/1 peinado",
